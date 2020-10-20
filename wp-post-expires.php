@@ -71,7 +71,7 @@ class XNPostExpires {
         }
 
         if(!isset($settings_load['post_types'])) {
-            $settings_load['post_types']['post'] = 1;
+            $settings_load['post_types']['deals'] = 1;
         }
 
         if(!isset($settings_load['prefix'])) {
@@ -148,6 +148,7 @@ class XNPostExpires {
             <div>
                 <select name="xn-wppe-expiration-action" id="xn-wppe-select-action">
                     <option <?php echo $select=='to_drafts'?'selected':'';?> value="to_drafts"><?php _e('Move to drafts', 'wp-post-expires'); ?></option>
+                    <option <?php echo $select=='to_private'?'selected':'';?> value="to_private"><?php _e('Move to private', 'wp-post-expires'); ?></option>
                     <option <?php echo $select=='to_trash'?'selected':'';?> value="to_trash"><?php _e('Move to trash', 'wp-post-expires'); ?></option>
                 </select>
             </div>
@@ -206,6 +207,7 @@ class XNPostExpires {
     public function settingsFieldAction() {
         echo '<select name="xn_wppe_settings[action]" id="xn_wppe_settings_action">';
             echo '<option '.($this->settings['action']=='to_drafts'?'selected':'').' value="to_drafts">'.__('Move to drafts', 'wp-post-expires').'</option>';
+            echo '<option '.($this->settings['action']=='to_private'?'selected':'').' value="to_private">'.__('Move to private', 'wp-post-expires').'</option>';
             echo '<option '.($this->settings['action']=='to_trash'?'selected':'').' value="to_trash">'.__('Move to trash', 'wp-post-expires').'</option>';
         echo '</select>';
     }
@@ -243,6 +245,8 @@ class XNPostExpires {
 
                 if ($action == 'to_drafts') {
                     wp_update_post(['ID' => $post->ID, 'post_status' => 'draft']);
+                } elseif($action == 'to_private') {
+                    wp_update_post(['ID' => $post->ID, 'post_status' => 'private']);
                 } elseif($action == 'to_trash') {
                     wp_trash_post($post->ID);
                 }
