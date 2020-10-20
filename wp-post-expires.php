@@ -365,35 +365,8 @@ function closingdate_show_value ($column_name) {
 	global $post;
 	$id = $post->ID;
 	if ($column_name === 'closingdate') {
-/* 		$ed = get_post_meta($id,'_closing-date',true);
-		$ed_status = get_post_meta($id,'_closing-date-status',true) == 'enabled' ? true : false;
-		$opts = get_post_meta($id,'_closing-date-options',true);
-		if (isset($opts['changeTo'])) {
-            $changeTo = $opts['changeTo'];
-		} */
-		//echo ($ed_status ? get_date_from_gmt(gmdate('Y-m-d H:i:s',$ed),get_option('date_format').' '.get_option('time_format')).' '.($ed-time() < 0 ? '<b>(EXPIRED)<b>' : ' will change to <b>'.$changeTo.'<b>' ) : __("Never",'post-expirator'));
-		echo ('TEST COLUMN');
-
-		//Values for Quick Edit
-/* 		if ($ed_status) {
-			$year = get_date_from_gmt(gmdate('Y-m-d H:i:s',$ed),'Y');
-			$month = get_date_from_gmt(gmdate('Y-m-d H:i:s',$ed),'m');
-			$day = get_date_from_gmt(gmdate('Y-m-d H:i:s',$ed),'d');
-			$hour = get_date_from_gmt(gmdate('Y-m-d H:i:s',$ed),'H');
-			$minute = get_date_from_gmt(gmdate('Y-m-d H:i:s',$ed),'i');
-			echo '<span id="expirationdate_year-'.$id.'" style="display: none;">'.$year.'</span>';
-			echo '<span id="expirationdate_month-'.$id.'" style="display: none;">'.$month.'</span>';
-			echo '<span id="expirationdate_day-'.$id.'" style="display: none;">'.$day.'</span>';
-			echo '<span id="expirationdate_hour-'.$id.'" style="display: none;">'.$hour.'</span>';
-			echo '<span id="expirationdate_minute-'.$id.'" style="display: none;">'.$minute.'</span>';
-			echo '<span id="expirationdate_enabled-'.$id.'" style="display: none;">true</span>';
-		} else {
-			echo '<span id="expirationdate_year-'.$id.'" style="display: none;">'.date('Y').'</span>';
-			echo '<span id="expirationdate_month-'.$id.'" style="display: none;">'.date('m').'</span>';
-			echo '<span id="expirationdate_day-'.$id.'" style="display: none;">'.date('d').'</span>';
-			echo '<span id="expirationdate_hour-'.$id.'" style="display: none;">'.date('H').'</span>';
-			echo '<span id="expirationdate_minute-'.$id.'" style="display: none;">'.date('i').'</span>';
-			echo '<span id="expirationdate_enabled-'.$id.'" style="display: none;">false</span>';
-		} */
+        $expires_action = get_post_meta($id, 'xn-wppe-expiration-action', true);
+        $expires_datetime = get_post_meta($id, 'xn-wppe-expiration', true);
+        echo ($expires_datetime ? $expires_datetime.' '.(strtotime($expires_datetime)-time() < 0 ? '<b>(EXPIRED)<b>' : ' will change to <b>'.$expires_action.'<b>' ) : __("Never",'post-expirator'));
   	}
 }
