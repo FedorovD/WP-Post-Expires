@@ -300,6 +300,64 @@ add_action('plugins_loaded', ['XNPostExpires','init']);
 
 
 /**
+ * adds an 'Closing date' column to the post display table.
+ */
+add_filter ('manage_posts_columns', 'closingdate_add_column', 10, 2);
+function closingdate_add_column ($columns,$type) {
+	$defaults = get_option('closingdateDefaults'.ucfirst($type));
+	if (!isset($defaults['activeMetaBox']) || $defaults['activeMetaBox'] == 'active') {
+	  	$columns['closingdate'] = __('Expires','post-duration');
+	}
+  	return $columns;
+}
+
+add_action( 'init', 'init_managesortablecolumns', 100 );
+function init_managesortablecolumns (){
+    $post_types = get_post_types(array('public'=>true));
+    foreach( $post_types as $post_type ){
+        add_filter( 'manage_edit-' . $post_type . '_sortable_columns', 'closingdate_sortable_column' );
+    }
+}
+function closingdate_sortable_column($columns) {
+	$columns['closingdate'] = 'closingdate';
+	return $columns;
+}
+
+add_action( 'pre_get_posts', 'my_closingdate_orderby' );
+function my_closingdate_orderby( $query ) {
+    	if( ! is_admin() )
+        	return;
+	$orderby = $query->get( 'orderby');
+	if( 'closingdate' == $orderby ) {
+		$query->set('meta_query',array(
+    			'relation'  => 'OR',
+	    		array(
+        			'key'       => '_closing-date',
+        			'compare'   => 'EXISTS'
+	    		),
+    			array(
+        			'key'       => '_closing-date',
+        			'compare'   => 'NOT EXISTS',
+	        		'value'     => ''
+    			)
+		));
+        	$query->set('orderby','meta_value_num');
+   	}
+}
+
+/**
+ * adds an 'Closing date' column to the page display table.
+ */
+add_filter ('manage_pages_columns', 'closingdate_add_column_page');
+function closingdate_add_column_page ($columns) {
+	$defaults = get_option('closingdateDefaultsPage');
+	if (!isset($defaults['activeMetaBox']) || $defaults['activeMetaBox'] == 'active') {
+	  	$columns['closingdate'] = __('Closing date','post-duration');
+	}
+  	return $columns;
+}
+
+/**
  * fills the 'Closing date' column of the post display table.
  */
 add_action ('manage_posts_custom_column', 'closingdate_show_value');
