@@ -74,10 +74,6 @@ class XNPostExpires {
             $settings_load['post_types']['post'] = 1;
         }
 
-        if(!isset($settings_load['action'])) {
-            $settings_load['action'] = 'add_prefix';
-        }
-
         if(!isset($settings_load['prefix'])) {
             $settings_load['prefix'] = __('Expired', 'wp-post-expires') . ':';
         }else{
@@ -151,7 +147,6 @@ class XNPostExpires {
             <div><?php _e('Action', 'wp-post-expires'); ?></div>
             <div>
                 <select name="xn-wppe-expiration-action" id="xn-wppe-select-action">
-                    <option <?php echo $select=='add_prefix'?'selected':'';?> value="add_prefix"><?php _e('Add Prefix', 'wp-post-expires'); ?></option>
                     <option <?php echo $select=='to_drafts'?'selected':'';?> value="to_drafts"><?php _e('Move to drafts', 'wp-post-expires'); ?></option>
                     <option <?php echo $select=='to_trash'?'selected':'';?> value="to_trash"><?php _e('Move to trash', 'wp-post-expires'); ?></option>
                 </select>
@@ -175,14 +170,11 @@ class XNPostExpires {
 
         $expiration  = !empty($_POST['xn-wppe-expiration'])?        sanitize_text_field($_POST['xn-wppe-expiration'])        : false;
         $action_type = !empty($_POST['xn-wppe-expiration-action'])? sanitize_text_field($_POST['xn-wppe-expiration-action']) : false;
-        $add_prefix  = isset($_POST['xn-wppe-expiration-prefix'])?  sanitize_text_field($_POST['xn-wppe-expiration-prefix']) : false;
 
         if($expiration !== false && $action_type !== false) {
             update_post_meta($post_id, 'xn-wppe-expiration', $expiration);
             update_post_meta($post_id, 'xn-wppe-expiration-action', $action_type);
-            if($add_prefix !== false) {
-                update_post_meta($post_id, 'xn-wppe-expiration-prefix', $add_prefix);
-            }
+
         } else {
             delete_post_meta($post_id, 'xn-wppe-expiration');
             delete_post_meta($post_id, 'xn-wppe-expiration-action');
@@ -213,7 +205,6 @@ class XNPostExpires {
 
     public function settingsFieldAction() {
         echo '<select name="xn_wppe_settings[action]" id="xn_wppe_settings_action">';
-            echo '<option '.($this->settings['action']=='add_prefix'?'selected':'').' value="add_prefix">'.__('Add Prefix', 'wp-post-expires').'</option>';
             echo '<option '.($this->settings['action']=='to_drafts'?'selected':'').' value="to_drafts">'.__('Move to drafts', 'wp-post-expires').'</option>';
             echo '<option '.($this->settings['action']=='to_trash'?'selected':'').' value="to_trash">'.__('Move to trash', 'wp-post-expires').'</option>';
         echo '</select>';
@@ -247,12 +238,7 @@ class XNPostExpires {
             $expires_action = get_post_meta($post->ID, 'xn-wppe-expiration-action', true);
             $action = !empty($expires_action)? $expires_action : $this->settings['action'];
 
-            if ($action == 'add_prefix') {
-
-                add_filter('the_title', [$this, 'textTitleFilter'], 10, 2);
-                add_filter('post_class', [$this, 'cssClassFilter']);
-
-            } elseif (!in_array($post->post_status, ['draft', 'trash'])) {
+            if (!in_array($post->post_status, ['draft', 'trash'])) {
                 remove_action('save_post', [$this, 'saveBoxFields']);
 
                 if ($action == 'to_drafts') {
