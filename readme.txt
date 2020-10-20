@@ -94,4 +94,4 @@ init1 - Mr. Robot
 
 = 1.0 =
 
-HELLO FRIEND
+Plugin homepage [WordPress Post Duration](https://github.com/FedorovD/WP-Post-Expires.git).

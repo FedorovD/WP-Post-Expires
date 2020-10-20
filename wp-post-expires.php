@@ -139,7 +139,7 @@ class XNPostExpires {
     ?>
 
         <div class="components-panel__row">
-            <div><?php _e('DateTime', 'wp-post-expires'); ?></div>
+            <div><?php _e('Expire DateTime (GMT+0)', 'wp-post-expires'); ?></div>
             <div><input type="text" name="xn-wppe-expiration" id="xn-wppe-datetime" style="width:100%" value="<?php echo $date; ?>" placeholder="<?php _e('yyyy-mm-dd h:i', 'wp-post-expires'); ?>"></div>
         </div>
 
@@ -151,13 +151,6 @@ class XNPostExpires {
                     <option <?php echo $select=='to_private'?'selected':'';?> value="to_private"><?php _e('Move to private', 'wp-post-expires'); ?></option>
                     <option <?php echo $select=='to_trash'?'selected':'';?> value="to_trash"><?php _e('Move to trash', 'wp-post-expires'); ?></option>
                 </select>
-            </div>
-        </div>
-
-        <div class="components-panel__row" id="xn-wppe-add-prefix-wrap">
-            <div><?php _e('Prefix', 'wp-post-expires'); ?></div>
-            <div>
-                <input type="text" name="xn-wppe-expiration-prefix" id="xn-wppe-add-prefix" style="width:100%" value="<?php echo $prefix; ?>" placeholder="<?php _e('Prefix for post title', 'wp-post-expires'); ?>">
             </div>
         </div>
     <?php
@@ -304,3 +297,45 @@ class XNPostExpires {
 
 }
 add_action('plugins_loaded', ['XNPostExpires','init']);
+
+
+/**
+ * fills the 'Closing date' column of the post display table.
+ */
+add_action ('manage_posts_custom_column', 'closingdate_show_value');
+function closingdate_show_value ($column_name) {
+	global $post;
+	$id = $post->ID;
+	if ($column_name === 'closingdate') {
+/* 		$ed = get_post_meta($id,'_closing-date',true);
+		$ed_status = get_post_meta($id,'_closing-date-status',true) == 'enabled' ? true : false;
+		$opts = get_post_meta($id,'_closing-date-options',true);
+		if (isset($opts['changeTo'])) {
+            $changeTo = $opts['changeTo'];
+		} */
+		//echo ($ed_status ? get_date_from_gmt(gmdate('Y-m-d H:i:s',$ed),get_option('date_format').' '.get_option('time_format')).' '.($ed-time() < 0 ? '<b>(EXPIRED)<b>' : ' will change to <b>'.$changeTo.'<b>' ) : __("Never",'post-expirator'));
+		echo ('TEST COLUMN');
+
+		//Values for Quick Edit
+/* 		if ($ed_status) {
+			$year = get_date_from_gmt(gmdate('Y-m-d H:i:s',$ed),'Y');
+			$month = get_date_from_gmt(gmdate('Y-m-d H:i:s',$ed),'m');
+			$day = get_date_from_gmt(gmdate('Y-m-d H:i:s',$ed),'d');
+			$hour = get_date_from_gmt(gmdate('Y-m-d H:i:s',$ed),'H');
+			$minute = get_date_from_gmt(gmdate('Y-m-d H:i:s',$ed),'i');
+			echo '<span id="expirationdate_year-'.$id.'" style="display: none;">'.$year.'</span>';
+			echo '<span id="expirationdate_month-'.$id.'" style="display: none;">'.$month.'</span>';
+			echo '<span id="expirationdate_day-'.$id.'" style="display: none;">'.$day.'</span>';
+			echo '<span id="expirationdate_hour-'.$id.'" style="display: none;">'.$hour.'</span>';
+			echo '<span id="expirationdate_minute-'.$id.'" style="display: none;">'.$minute.'</span>';
+			echo '<span id="expirationdate_enabled-'.$id.'" style="display: none;">true</span>';
+		} else {
+			echo '<span id="expirationdate_year-'.$id.'" style="display: none;">'.date('Y').'</span>';
+			echo '<span id="expirationdate_month-'.$id.'" style="display: none;">'.date('m').'</span>';
+			echo '<span id="expirationdate_day-'.$id.'" style="display: none;">'.date('d').'</span>';
+			echo '<span id="expirationdate_hour-'.$id.'" style="display: none;">'.date('H').'</span>';
+			echo '<span id="expirationdate_minute-'.$id.'" style="display: none;">'.date('i').'</span>';
+			echo '<span id="expirationdate_enabled-'.$id.'" style="display: none;">false</span>';
+		} */
+  	}
+}
